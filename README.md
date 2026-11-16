@@ -18,20 +18,38 @@ Originalni skup podataka nalazi se u folderu data/. Dataset sadrži tekstualne p
 
 - Analiza i treniranje modela
 
-Celokupan proces analize i treniranja modela nalazi se u Jupyter Notebook svesci u folderu notebooks/.
+Celokupan proces analize i treniranja modela nalazi se u Jupyter Notebook sveskama u folderu notebooks/.
 
-- Proces obuhvata:
-  - Učitavanje i analizu podataka
-  - Čišćenje i pripremu podataka
-  - TF-IDF vektorizaciju tekstualnih podataka
-  - Treniranje više klasifikacionih modela
-  - Evaluaciju i poređenje rezultata modela
-  - Čuvanje finalnog istreniranog modela pomoću Joblib biblioteke
+    - product_classifier_training_analysis.ipynb – analiza podataka, priprema i treniranje modela, evaluacija i poređenje rezultata.
+    - product_classifier_predict_analysis.ipynb – analiza i testiranje predikcija.
+
+- Proces treniranja obuhvata:
+    - Učitavanje i analizu podataka
+    - Čišćenje i pripremu podataka
+    - TF-IDF vektorizaciju tekstualnih podataka
+    - Treniranje više klasifikacionih modela
+    - Evaluaciju i poređenje rezultata modela
+    - Čuvanje finalnog istreniranog modela pomoću Joblib biblioteke
 
 - Korišćenje modela
 
 Finalni istrenirani model sačuvan je u folderu model/ pod nazivom product_classifier_final_model.pkl
-Za korišćenje modela i klasifikaciju novih tekstualnih podataka koristi se Python skripta predict.py, koja učitava prethodno sačuvani model.
+Za treniranje modela i klasifikaciju novih tekstualnih podataka koriste se Python skripte iz foldera src/:
+
+     - product_classifier_training.py – skripta za treniranje modela.
+     - product_classifier_predict.py – skripta za učitavanje sačuvanog modela i predikciju kategorije novih proizvoda.
+
+- Pokretanje projekta
+
+Sve komande pokreću se iz glavnog foldera repozitorijuma.
+
+Treniranje modela:
+  
+    - python src/product_classifier_training.py
+  
+Predikcija kategorije proizvoda:
+  
+    - python src/product_classifier_predict.py
 
 - Dalji razvoj projekta i moguća unapređenja
 
