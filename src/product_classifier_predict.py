@@ -1,7 +1,8 @@
 import joblib
+import pandas as pd
 
 # Load the saved model
-model = joblib.load("product_classifier_final_model.pkl")
+model = joblib.load("model/product_classifier_final_model.pkl")
 
 # Interactive testing
 print("\nEnter a product title to predict its category.")
@@ -14,6 +15,12 @@ while True:
         print("Exiting...")
         break
 
-    prediction = model.predict([title])[0]
+    input_data = pd.DataFrame({
+        'product_title': [title],
+        'word_count': [len(title.split())],
+        'title_length': [len(title)]
+    })
+
+    prediction = model.predict(input_data)[0]
 
     print(f"Predicted category: {prediction}\n" + "-" * 40)

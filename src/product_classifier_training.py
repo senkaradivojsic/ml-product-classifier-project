@@ -1,5 +1,8 @@
 import pandas as pd
 import joblib
+
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -34,8 +37,13 @@ df = df.drop(columns=['product_id', 'merchant_id', 'product_code', 'merchant_rat
 # Deleting missing values 
 df = df.dropna(subset=['category_label', 'product_title'])
 
+# Add a new column word_count and title_length
+df['word_count'] = df['product_title'].apply(lambda x: len(str(x).split()))
+df['title_length'] = df['product_title'].apply(lambda x: len(str(x)))
+
+
 # Separate features (X) and labels (y)
-X = df["product_title"]
+X = df[["product_title", "word_count", "title_length"]]
 y = df["category_label"]
 
 # Split the data: 80% for training, 20% for testing
@@ -43,6 +51,13 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
 
+# Define the preprocessor
+preprocessor = ColumnTransformer(
+    transformers=[
+        ("title", TfidfVectorizer(), "product_title"),
+        ("length", MinMaxScaler(), ["word_count", "title_length"])
+    ]
+)
 
 # Train different classification models
 models = {
@@ -55,9 +70,10 @@ models = {
 trained_models = {}
 for name, classifier in models.items():
     pipeline = Pipeline([
-        ('tfidf', TfidfVectorizer()),
-        ('classifier', classifier)
+        ("preprocessor", preprocessor),
+        ("classifier", classifier)
     ])
+
     pipeline.fit(X_train, y_train)
     trained_models[name] = pipeline 
 
@@ -78,7 +94,7 @@ for name, model in trained_models.items():
 
 # Train the final model on the entire dataset
 final_model = Pipeline([
-    ('tfidf', TfidfVectorizer()),
+    ('preprocessor', preprocessor),
     ('classifier', LinearSVC(max_iter=1000))
 ])
 
@@ -86,7 +102,6 @@ final_model.fit(X, y)
 
  
 # Save the trained model to a file
-joblib.dump(final_model, "product_classifier_final_model.pkl")
-print(" Model trained and saved as 'product_classifier_final_model.pkl'")
-
+joblib.dump(final_model, "model/product_classifier_final_model.pkl")
+print(" Model trained and saved as 'model/product_classifier_final_model.pkl'")
 
